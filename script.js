@@ -17,7 +17,7 @@ let currentX = 0;
 let currentY = 0;
 let targetX = 0;
 let targetY = 0;
-let ease = 0.06; // Увеличили скорость движения
+let ease = 0.06;
 
 function lerp(start, end, factor) {
     return start + (end - start) * factor;
@@ -27,33 +27,26 @@ function handleParallax(e) {
     const mouseX = e.clientX;
     const mouseY = e.clientY;
     
-    // Центрируем координаты относительно центра экрана
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
     
-    // Увеличили амплитуду движения
     targetX = (mouseX - centerX) / 50;
     targetY = (mouseY - centerY) / 50;
 }
 
 function animate() {
-    // Плавное движение к целевой точке
     currentX = lerp(currentX, targetX, ease);
     currentY = lerp(currentY, targetY, ease);
     
-    // Применяем трансформацию к фону
     parallaxBg.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     
     requestAnimationFrame(animate);
 }
 
-// Добавляем обработчик движения мыши
 document.addEventListener('mousemove', handleParallax);
 
-// Запускаем анимацию
 animate();
 
-// Typing Animation
 function typeText(element, text, speed = 50) {
     let i = 0;
     element.innerHTML = '';
