@@ -1,6 +1,81 @@
 // NASA API Key - Replace with your own API key
 const NASA_API_KEY = 'DEMO_KEY'; // Replace with your actual NASA API key
 
+// Initialize Particles
+particlesJS('particles-js', {
+    particles: {
+        number: {
+            value: 80,
+            density: {
+                enable: true,
+                value_area: 800
+            }
+        },
+        color: {
+            value: '#ffffff'
+        },
+        shape: {
+            type: 'circle'
+        },
+        opacity: {
+            value: 0.5,
+            random: true,
+            animation: {
+                enable: true,
+                speed: 1,
+                minimumValue: 0.1,
+                sync: false
+            }
+        },
+        size: {
+            value: 3,
+            random: true
+        },
+        line_linked: {
+            enable: true,
+            distance: 150,
+            color: '#ffffff',
+            opacity: 0.4,
+            width: 1
+        },
+        move: {
+            enable: true,
+            speed: 2,
+            direction: 'none',
+            random: true,
+            straight: false,
+            out_mode: 'out',
+            bounce: false
+        }
+    },
+    interactivity: {
+        detect_on: 'canvas',
+        events: {
+            onhover: {
+                enable: true,
+                mode: 'grab'
+            },
+            onclick: {
+                enable: true,
+                mode: 'push'
+            },
+            resize: true
+        },
+        modes: {
+            grab: {
+                distance: 140,
+                line_linked: {
+                    opacity: 1
+                }
+            },
+            push: {
+                particles_nb: 4
+            }
+        }
+    },
+    retina_detect: true
+});
+
 // DOM Elements
 const apodImg = document.getElementById('apod-img');
 const apodTitle = document.getElementById('apod-title');
