@@ -297,3 +297,117 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         });
     });
 });
+
+// Solar System Carousel
+const carousel = document.querySelector('.solar-system-carousel');
+if (carousel) {
+    const container = carousel.querySelector('.carousel-container');
+    const track = carousel.querySelector('.carousel-track');
+    const cards = carousel.querySelectorAll('.carousel-card');
+    let currentIndex = 0;
+    let isAnimating = false;
+
+    function positionCards() {
+        cards.forEach((card, index) => {
+            // Reset all cards first
+            card.classList.remove('far-prev', 'prev', 'active', 'next', 'far-next');
+            card.style.display = 'none';
+            
+            // Calculate relative position
+            const relativeIndex = (index - currentIndex + cards.length) % cards.length;
+            
+            // Position cards based on their relative position
+            if (relativeIndex === 0) {
+                card.style.display = 'flex';
+                card.classList.add('active');
+            } else if (relativeIndex === 1) {
+                card.style.display = 'flex';
+                card.classList.add('next');
+            } else if (relativeIndex === cards.length - 1) {
+                card.style.display = 'flex';
+                card.classList.add('prev');
+            } else if (relativeIndex === 2) {
+                card.style.display = 'flex';
+                card.classList.add('far-next');
+            } else if (relativeIndex === cards.length - 2) {
+                card.style.display = 'flex';
+                card.classList.add('far-prev');
+            }
+        });
+    }
+
+    function updateCarousel(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        // Update current index
+        currentIndex = (currentIndex + direction + cards.length) % cards.length;
+        
+        // Position cards
+        positionCards();
+        
+        // Reset animation flag after transition completes
+        setTimeout(() => {
+            isAnimating = false;
+        }, 800);
+    }
+
+    // Mouse wheel event with debounce
+    let wheelTimeout;
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (wheelTimeout) return;
+        
+        const direction = e.deltaY > 0 ? 1 : -1;
+        updateCarousel(direction);
+        
+        wheelTimeout = setTimeout(() => {
+            wheelTimeout = null;
+        }, 800);
+    });
+
+    // Touch events for mobile
+    let touchStartY = 0;
+    container.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    container.addEventListener('touchend', (e) => {
+        const touchEndY = e.changedTouches[0].clientY;
+        const diff = touchStartY - touchEndY;
+        
+        if (Math.abs(diff) > 50) {
+            const direction = diff > 0 ? 1 : -1;
+            updateCarousel(direction);
+        }
+    });
+
+    // Initialize carousel
+    window.addEventListener('load', () => {
+        positionCards();
+    });
+}
+
+// 3D rotation effect for hero section
+const heroContent = document.querySelector('.hero-content');
+const contentWrapper = document.querySelector('.hero-content .content-wrapper');
+
+if (heroContent && contentWrapper) {
+    heroContent.addEventListener('mousemove', (e) => {
+        const rect = heroContent.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        contentWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    heroContent.addEventListener('mouseleave', () => {
+        contentWrapper.style.transform = 'rotateX(0) rotateY(0)';
+    });
+}

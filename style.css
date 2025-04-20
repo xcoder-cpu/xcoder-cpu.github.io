@@ -87,38 +87,136 @@ body {
     text-align: center;
 }
 
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
 .hero-content {
     max-width: 800px;
-    background: var(--panel-color);
+    background: rgba(0, 0, 0, 0.7);
     padding: 3rem;
-    border-radius: var(--border-radius);
+    border-radius: 30px;
     backdrop-filter: blur(10px);
     animation: fadeInUp 1.5s ease-out;
     text-align: center;
     width: 100%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
 }
 
-.hero h1, .hero p {
-    width: 100%;
-    text-align: center;
-    margin: 0 auto;
+.hero-content:hover {
+    transform: scale(1.02);
+}
+
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(79, 195, 247, 0.1),
+        rgba(0, 0, 0, 0.1),
+        rgba(79, 195, 247, 0.1)
+    );
+    animation: gradientFlow 8s ease infinite;
+    z-index: 1;
+}
+
+.hero-content::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(79, 195, 247, 0.1) 0%,
+        transparent 70%
+    );
+    animation: rotateLight 20s linear infinite;
+    z-index: 2;
 }
 
 .hero h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 4rem;
     margin-bottom: 1rem;
-    color: var(--secondary-color);
+    color: #4fc3f7;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: white;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .countdown {
     margin-top: 2rem;
     font-family: 'Orbitron', sans-serif;
+    position: relative;
+    z-index: 3;
 }
 
 #timer {
     font-size: 2rem;
-    color: var(--secondary-color);
+    color: #4fc3f7;
+    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes rotateLight {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes glowPulse {
+    0% {
+        text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(79, 195, 247, 0.8);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+    }
 }
 
 /* Remove old background animations */
@@ -172,16 +270,6 @@ nav {
 .nav-links a:hover {
     color: var(--secondary-color);
     background: rgba(100, 255, 218, 0.1);
-}
-
-/* Hero Section */
-.hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 1rem;
 }
 
 /* Sections */
@@ -343,4 +431,243 @@ footer {
         text-align: center;
         gap: 1rem;
     }
+}
+
+/* Solar System Section */
+.solar-system-section {
+    padding: 4rem 2rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    border-radius: 30px;
+    margin: 2rem auto;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 800px;
+    position: relative;
+    overflow: hidden;
+}
+
+.solar-system-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: 0.7s;
+    transform: skewX(-25deg);
+}
+
+.solar-system-section:hover::before {
+    left: 150%;
+    transition: 0.7s;
+}
+
+.solar-system-header {
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+.solar-system-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    color: #4fc3f7;
+}
+
+.solar-system-header p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.planet-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat .number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4fc3f7;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.stat .label {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Vertical Carousel Styles */
+.solar-system-carousel {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    height: 500px;
+    perspective: 1000px;
+    margin-top: 1rem;
+}
+
+.solar-system-carousel h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #4fc3f7;
+    width: 100%;
+}
+
+.carousel-container {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    width: 100%;
+    max-height: 450px;
+}
+
+.carousel-track {
+    position: relative;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-card {
+    position: absolute;
+    left: 50%;
+    width: 90%;
+    height: 180px;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    visibility: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.carousel-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+}
+
+.carousel-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: #4fc3f7;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-card p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin: 0;
+    max-width: 90%;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-card.far-prev {
+    top: -20%;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    z-index: 0;
+    visibility: hidden;
+}
+
+.carousel-card.prev {
+    top: 10%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.3;
+    z-index: 1;
+    visibility: visible;
+}
+
+.carousel-card.active {
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    z-index: 2;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.carousel-card.next {
+    top: 90%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.3;
+    z-index: 1;
+    visibility: visible;
+}
+
+.carousel-card.far-next {
+    top: 120%;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    z-index: 0;
+    visibility: hidden;
+}
+
+/* Hide scrollbar but keep functionality */
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hero-content .content-wrapper {
+    position: relative;
+    z-index: 3;
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
 }
