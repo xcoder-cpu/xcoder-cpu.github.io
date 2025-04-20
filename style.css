@@ -67,16 +67,10 @@ body {
 }
 
 .typing::after {
-    content: '_';
+    content: '▋';
     position: absolute;
-    right: 50%;
-    transform: translateX(50%);
     animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    color: #4fc3f7;
 }
 
 .typing-text {
@@ -85,6 +79,11 @@ body {
     white-space: nowrap;
     width: 100%;
     text-align: center;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 .hero {
@@ -160,7 +159,7 @@ body {
     position: relative;
     z-index: 3;
     text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
-    animation: glowPulse 2s ease-in-out infinite;
+    animation: colorPulse 3s ease-in-out infinite;
 }
 
 .hero p {
@@ -183,7 +182,7 @@ body {
     font-size: 2rem;
     color: #4fc3f7;
     text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
-    animation: glowPulse 2s ease-in-out infinite;
+    animation: colorPulse 3s ease-in-out infinite;
 }
 
 @keyframes gradientFlow {
@@ -207,14 +206,17 @@ body {
     }
 }
 
-@keyframes glowPulse {
+@keyframes colorPulse {
     0% {
+        color: #4fc3f7;
         text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
     }
     50% {
-        text-shadow: 0 0 20px rgba(79, 195, 247, 0.8);
+        color: #64ffda;
+        text-shadow: 0 0 20px rgba(100, 255, 218, 0.8);
     }
     100% {
+        color: #4fc3f7;
         text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
     }
 }

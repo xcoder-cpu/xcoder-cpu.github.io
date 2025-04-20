@@ -131,11 +131,23 @@ function typeText(element, text, speed = 50) {
     element.style.textAlign = 'center';
     element.style.width = '100%';
     
+    function updateCursor() {
+        const cursor = element.querySelector('.typing::after');
+        if (cursor) {
+            const textWidth = element.offsetWidth;
+            const textHeight = element.offsetHeight;
+            cursor.style.left = `${textWidth}px`;
+            cursor.style.top = '0';
+        }
+    }
+    
     function type() {
         if (i < text.length) {
             element.innerHTML = text.substring(0, i + 1);
             i++;
             setTimeout(type, speed);
+            // Обновляем позицию курсора после каждого символа
+            setTimeout(updateCursor, 0);
         } else {
             element.classList.remove('typing');
             // Ensure the final text is properly centered
