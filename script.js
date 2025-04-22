@@ -186,16 +186,87 @@ function applyTypingAnimation() {
 
 // Scroll Animation
 function handleScroll() {
-    const sections = document.querySelectorAll('section');
+    const sections = document.querySelectorAll('section, .solar-system-section'); 
     const windowHeight = window.innerHeight;
     const triggerBottom = windowHeight * 0.8;
+    let earthSectionVisible = false; // Флаг для однократной инициализации глобуса
 
     sections.forEach(section => {
         const sectionTop = section.getBoundingClientRect().top;
         if (sectionTop < triggerBottom) {
             section.classList.add('visible');
-            // Apply typing animation when section becomes visible
-            if (!section.classList.contains('animated')) {
+            
+            // Инициализация глобуса при первом появлении секции #earth
+            if (section.id === 'earth' && !earthSectionVisible) {
+                console.log('Секция Земля видима, пытаемся инициализировать глобус');
+                // Проверяем наличие необходимых библиотек
+                if (typeof THREE === 'undefined') {
+                    console.error('Three.js не загружен! Подключаем библиотеку...');
+                    const threeScript = document.createElement('script');
+                    threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+                    document.body.appendChild(threeScript);
+                    
+                    threeScript.onload = function() {
+                        console.log('Three.js успешно загружен');
+                        // Теперь загружаем OrbitControls
+                        const orbitScript = document.createElement('script');
+                        orbitScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
+                        document.body.appendChild(orbitScript);
+                        
+                        orbitScript.onload = function() {
+                            console.log('OrbitControls успешно загружен');
+                            // Пробуем инициализировать глобус
+                            if (typeof window.initEarthGlobe === 'function') {
+                                window.initEarthGlobe();
+                                earthSectionVisible = true;
+                            } else {
+                                console.error('Функция initEarthGlobe не найдена после загрузки библиотек!');
+                            }
+                        };
+                    };
+                } else if (typeof THREE.OrbitControls === 'undefined') {
+                    console.error('OrbitControls не загружен! Подключаем библиотеку...');
+                    const orbitScript = document.createElement('script');
+                    orbitScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
+                    document.body.appendChild(orbitScript);
+                    
+                    orbitScript.onload = function() {
+                        console.log('OrbitControls успешно загружен');
+                        // Пробуем инициализировать глобус
+                        if (typeof window.initEarthGlobe === 'function') {
+                            window.initEarthGlobe();
+                            earthSectionVisible = true;
+                        } else {
+                            console.error('Функция initEarthGlobe не найдена после загрузки OrbitControls!');
+                        }
+                    };
+                } else if (typeof window.initEarthGlobe === 'function') {
+                    console.log('Инициализация глобуса...');
+                    window.initEarthGlobe();
+                    earthSectionVisible = true;
+                } else {
+                    console.error('Функция initEarthGlobe не найдена! Проверяем загрузку earth.js...');
+                    // Пробуем подключить earth.js динамически
+                    const earthScript = document.createElement('script');
+                    earthScript.src = 'earth.js';
+                    document.body.appendChild(earthScript);
+                    
+                    earthScript.onload = function() {
+                        console.log('earth.js загружен, повторная попытка инициализации...');
+                        setTimeout(() => {
+                            if (typeof window.initEarthGlobe === 'function') {
+                                window.initEarthGlobe();
+                                earthSectionVisible = true;
+                            } else {
+                                console.error('Функция initEarthGlobe все еще не найдена после загрузки earth.js!');
+                            }
+                        }, 500);
+                    };
+                }
+            }
+            
+            // Анимация печати для ДРУГИХ секций
+            if (section.matches('section:not(#earth)') && !section.classList.contains('animated')) { 
                 section.classList.add('animated');
                 const headings = section.querySelectorAll('h2');
                 headings.forEach((heading, index) => {
@@ -207,6 +278,8 @@ function handleScroll() {
                 });
             }
         }
+        // Можно добавить логику для снятия класса visible при уходе из зоны видимости, если нужно
+        // else { section.classList.remove('visible'); }
     });
 }
 
@@ -246,134 +319,38 @@ function updateTimer() {
 updateTimer();
 setInterval(updateTimer, 1000);
 
-// Функция для перевода текста
-async function translateText(text) {
-    try {
-        // Разбиваем текст на предложения
-        const sentences = text.split(/(?<=[.!?])\s+/);
-        const translatedSentences = [];
-        
-        for (const sentence of sentences) {
-            if (sentence.trim()) {
-                try {
-                    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sentence)}&langpair=en|ru`);
-                    const data = await response.json();
-                    
-                    if (data.responseStatus === 200 && data.responseData.translatedText) {
-                        translatedSentences.push(data.responseData.translatedText);
-                    } else {
-                        translatedSentences.push(sentence); // Если перевод не удался, используем оригинал
-                    }
-                } catch (error) {
-                    console.error('Ошибка при переводе предложения:', error);
-                    translatedSentences.push(sentence);
-                }
-                
-                // Добавляем небольшую задержку между запросами
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-        }
-        
-        return translatedSentences.join(' ');
-    } catch (error) {
-        console.error('Ошибка при переводе:', error);
-        return text;
-    }
-}
-
 // Получение Астрономической картинки дня
 async function fetchAPOD() {
     try {
-        // Добавляем классы загрузки
-        apodTitle.classList.add('loading');
-        apodExplanation.classList.add('loading');
-        
-        // Устанавливаем временный текст загрузки
-        apodTitle.textContent = 'Загрузка заголовка';
-        apodExplanation.textContent = 'Загрузка описания';
-        
         const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
         const data = await response.json();
         
-        if (data.url) {
-            apodImg.src = data.url;
-            apodImg.alt = data.title || 'Астрономическая картинка дня';
-        }
-        
-        // Переводим заголовок
-        if (data.title) {
-            const translatedTitle = await translateText(data.title);
-            apodTitle.textContent = translatedTitle;
-            apodTitle.classList.remove('loading');
-        }
-        
-        if (data.date) {
-            apodDate.textContent = formatRussianDate(new Date(data.date));
-        }
-        
-        // Переводим описание
-        if (data.explanation) {
-            try {
-                const translatedExplanation = await translateText(data.explanation);
-                apodExplanation.textContent = translatedExplanation;
-                apodExplanation.classList.remove('loading');
-            } catch (error) {
-                console.error('Ошибка при переводе описания:', error);
-                apodExplanation.textContent = data.explanation;
-                apodExplanation.classList.remove('loading');
-            }
-        }
+        apodImg.src = data.url;
+        apodTitle.textContent = data.title;
+        apodDate.textContent = formatRussianDate(new Date(data.date));
+        apodExplanation.textContent = data.explanation;
     } catch (error) {
         console.error('Ошибка при загрузке APOD:', error);
         apodTitle.textContent = 'Ошибка загрузки';
         apodExplanation.textContent = 'К сожалению, не удалось загрузить астрономическую картинку дня. Пожалуйста, попробуйте позже.';
-        apodTitle.classList.remove('loading');
-        apodExplanation.classList.remove('loading');
     }
 }
-
-// Добавляем индикатор загрузки для перевода
-function addLoadingIndicator() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .loading {
-            position: relative;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .loading:after {
-            content: '...';
-            position: absolute;
-            animation: loading 1.5s infinite;
-        }
-        @keyframes loading {
-            0% { content: '.'; }
-            33% { content: '..'; }
-            66% { content: '...'; }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Инициализация индикатора загрузки
-addLoadingIndicator();
 
 // Получение фотографий с Марсохода
 async function fetchMarsPhotos(rover) {
     try {
+        // Используем более стабильный эндпоинт для демо-режима
         const response = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=1000&api_key=${NASA_API_KEY}`);
         const data = await response.json();
         
         marsPhotos.innerHTML = '';
         
         if (data.photos && data.photos.length > 0) {
-            const photos = data.photos.slice(0, 6);
-            photos.forEach(photo => {
+            // Берем первые 6 фотографий
+            data.photos.slice(0, 6).forEach(photo => {
                 const img = document.createElement('img');
                 img.src = photo.img_src;
                 img.alt = `Фотография с марсохода ${rover}`;
-                img.loading = 'lazy';
-                img.dataset.caption = `Фотография с марсохода ${rover}. Дата: ${photo.earth_date}`;
-                img.addEventListener('click', () => openModal(img.src, img.dataset.caption));
                 marsPhotos.appendChild(img);
             });
         } else {
@@ -385,39 +362,23 @@ async function fetchMarsPhotos(rover) {
     }
 }
 
-// Получение изображения Земли
-async function fetchEarthImage() {
-    try {
-        const response = await fetch(`https://api.nasa.gov/EPIC/api/natural?api_key=${NASA_API_KEY}`);
-        const data = await response.json();
-        
-        if (data.length > 0) {
-            const image = data[0];
-            const date = image.date.split(' ')[0].replace(/-/g, '/');
-            earthImg.src = `https://epic.gsfc.nasa.gov/archive/natural/${date}/png/${image.image}.png`;
-        }
-    } catch (error) {
-        console.error('Ошибка при загрузке изображения Земли:', error);
-        earthImg.alt = 'Не удалось загрузить изображение Земли';
-    }
-}
-
 // Обработчики событий
 roverSelect.addEventListener('change', (e) => {
     fetchMarsPhotos(e.target.value);
 });
 
-// Начальная загрузка
+// Начальная загрузка - НЕ вызываем initEarthGlobe здесь
 fetchAPOD();
 fetchMarsPhotos('curiosity');
-fetchEarthImage();
+// fetchEarthImage(); // Удалено
+// initEarthGlobe(); // Удалено - будет вызвано в handleScroll
 
-// Обновление контента каждый час
+// Обновление контента каждый час - НЕ вызываем initEarthGlobe здесь
 setInterval(() => {
     fetchAPOD();
     fetchMarsPhotos(roverSelect.value);
-    fetchEarthImage();
-}, 3600000); // 3600000 миллисекунд = 1 час
+    // fetchEarthImage(); // Удалено
+}, 3600000); 
 
 // Плавная прокрутка для навигационных ссылок
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -519,9 +480,9 @@ if (carousel) {
     });
 }
 
-// 3D эффект для главной плашки
+// 3D эффект для главной плашки (ИСПРАВЛЕННЫЙ КОД)
 const heroContent = document.querySelector('.hero-content');
-const contentWrapper = document.querySelector('.hero-content .content-wrapper');
+const contentWrapper = document.querySelector('.hero-content .content-wrapper'); 
 
 if (heroContent && contentWrapper) {
     heroContent.addEventListener('mousemove', (e) => {
@@ -532,8 +493,9 @@ if (heroContent && contentWrapper) {
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
+        // Исправляем направление: Инвертируем X, НЕ инвертируем Y
+        const rotateX = -((y - centerY) / 20); // Добавляем инверсию
+        const rotateY = (x - centerX) / 20;  // Убираем инверсию
         
         contentWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
@@ -543,86 +505,78 @@ if (heroContent && contentWrapper) {
     });
 }
 
-// Анимация появления элементов с задержкой
-function animateElements() {
-    const elements = document.querySelectorAll('.hero h1, .hero p, .countdown');
-    elements.forEach((element, index) => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-            element.style.transition = 'all 0.8s ease-out';
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
-        }, index * 300);
-    });
-}
-
-// Запускаем анимации при загрузке
-window.addEventListener('load', () => {
-    animateElements();
-});
-
-// Модальное окно
-const modal = document.getElementById('photo-modal');
-const modalImg = document.getElementById('modal-img');
-const modalCaption = document.getElementById('modal-caption');
-const closeModal = document.querySelector('.close-modal');
-
-function openModal(src, caption) {
-    modal.style.display = 'block';
-    modalImg.src = src;
-    modalCaption.textContent = caption;
-    document.body.style.overflow = 'hidden'; // Запрещаем прокрутку страницы
-}
-
-function closeModalHandler() {
-    modal.style.display = 'none';
-    document.body.style.overflow = ''; // Возвращаем прокрутку страницы
-}
-
-closeModal.addEventListener('click', closeModalHandler);
-
-// Закрытие модального окна при клике вне изображения
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        closeModalHandler();
-    }
-});
-
-// Закрытие модального окна по клавише Escape
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'block') {
-        closeModalHandler();
-    }
-});
-
-// 3D эффект слежения за мышкой для Solar System Section
+// 3D эффект слежения за мышкой для Solar System Section (ИСПРАВЛЕННЫЙ КОД)
 const solarSystemSection = document.querySelector('.solar-system-section');
 
 if (solarSystemSection) {
-    const maxRotation = 4; // Максимальный угол наклона в градусах
+    const maxRotation = 4; 
+    const baseTranslateY = -8; 
+    const smoothingFactor = 0.08; 
+
+    let targetRotateX = 0;
+    let targetRotateY = 0;
+    let currentRotateX = 0;
+    let currentRotateY = 0;
+
+    let isHovering = false; 
+    let animationFrameId = null;
+
+    function lerp(start, end, factor) {
+        return start + (end - start) * factor;
+    }
+
+    function animateTilt() {
+        if (!isHovering && Math.abs(currentRotateX) < 0.01 && Math.abs(currentRotateY) < 0.01) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+            const isVisible = solarSystemSection.classList.contains('visible');
+            const finalTranslateY = isVisible ? 0 : 50; 
+            solarSystemSection.style.transform = `perspective(1200px) translateY(${finalTranslateY}px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            return;
+        }
+
+        currentRotateX = lerp(currentRotateX, targetRotateX, smoothingFactor);
+        currentRotateY = lerp(currentRotateY, targetRotateY, smoothingFactor);
+
+        let currentTranslateY = baseTranslateY;
+        if (!isHovering) {
+            const isVisible = solarSystemSection.classList.contains('visible');
+            const finalTranslateY = isVisible ? 0 : 50;
+            currentTranslateY = lerp(parseFloat(solarSystemSection.style.transform.split('translateY(')[1]?.split('px)')[0]) || finalTranslateY, finalTranslateY, smoothingFactor * 2);
+            targetRotateX = 0;
+            targetRotateY = 0;
+        }
+
+        solarSystemSection.style.transform = `perspective(1200px) translateY(${currentTranslateY}px) rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg) scale(1)`;
+        animationFrameId = requestAnimationFrame(animateTilt);
+    }
+
+    solarSystemSection.addEventListener('mouseenter', () => {
+        isHovering = true;
+        if (!animationFrameId) {
+            animateTilt();
+        }
+    });
 
     solarSystemSection.addEventListener('mousemove', (e) => {
-        const rect = solarSystemSection.getBoundingClientRect();
-        const x = e.clientX - rect.left; // Координата X внутри элемента
-        const y = e.clientY - rect.top;  // Координата Y внутри элемента
+        if (!isHovering) return; 
 
+        const rect = solarSystemSection.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        const rotateX = ((y - centerY) / centerY) * maxRotation;
-        const rotateY = -((x - centerX) / centerX) * maxRotation; // Инвертируем Y для интуитивного наклона
-
-        // Применяем наклон + сохраняем базовый небольшой сдвиг и масштаб от hover (если он есть)
-        // Можно просто применить наклон, тогда hover-трансформация будет переопределяться
-        solarSystemSection.style.transform = `perspective(1200px) translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+        // ИСПРАВЛЯЕМ НАПРАВЛЕНИЕ: Инвертируем обе оси 
+        targetRotateX = -((y - centerY) / centerY) * maxRotation; 
+        targetRotateY = ((x - centerX) / centerX) * maxRotation; // Убираем минус отсюда
+        
+        if (!animationFrameId) {
+             animateTilt();
+        }
     });
 
     solarSystemSection.addEventListener('mouseleave', () => {
-        // Возвращаем стиль к состоянию ховера (или к исходному, если убрать translateY/scale)
-        // Если оставить transform как в :hover, то при уходе мыши сохранится эффект наведения
-        // Если сбросить transform = '', то вернется к состоянию без ховера
-        solarSystemSection.style.transform = `perspective(1200px) translateY(-8px) rotateX(0deg) rotateY(0deg) scale(1.01)`; // Возврат к hover-состоянию без наклона
-        // Или сбросить полностью: solarSystemSection.style.transform = '';
+        isHovering = false;
     });
 }

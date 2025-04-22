@@ -434,16 +434,20 @@ nav {
 }
 
 /* Sections */
-section {
+section,
+.solar-system-section {
     padding: 5rem 1rem;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 2rem auto;
     opacity: 0;
     transform: translateY(50px);
-    transition: all 0.8s ease-out;
+    transition: opacity 0.8s ease-out, 
+                transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+                box-shadow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-section.visible {
+section.visible,
+.solar-system-section.visible {
     opacity: 1;
     transform: translateY(0);
 }
@@ -623,25 +627,67 @@ section h2 {
 }
 
 /* Earth Section */
+.earth-section {
+    padding: 2rem 0 4rem;
+    text-align: center;
+    background: linear-gradient(to bottom, rgba(0,10,30,0.7), rgba(0,20,60,0.9));
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.earth-section h2 {
+    color: #4fc3f7;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+}
+
 .earth-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    align-items: center;
     gap: 2rem;
-    background: var(--panel-color);
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 1s ease-out;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.earth-image img {
+@media (min-width: 992px) {
+    .earth-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.earth-info {
+    text-align: center; 
     width: 100%;
-    border-radius: var(--border-radius);
-    transition: transform 0.3s ease;
+    padding: 1.5rem;
+    background: rgba(0,10,30,0.5);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(79, 195, 247, 0.2);
 }
 
-.earth-image img:hover {
-    transform: scale(1.02);
+.earth-info h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #64ffda;
+}
+
+.earth-info p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #e0f7fa;
+}
+
+.interaction-hint {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #b3e5fc;
+    background: rgba(0,0,0,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
 }
 
 /* Footer */
@@ -701,16 +747,13 @@ footer {
 
 /* Solar System Section */
 .solar-system-section {
-    padding: 4rem 2rem;
-    /* Матовый фон с легким градиентом и шумом */
     background: 
         linear-gradient(rgba(10, 25, 47, 0.85), rgba(2, 12, 27, 0.9)),
         url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"%3E%3Cpath fill="%23ffffff" fill-opacity="0.03" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"%3E%3C/path%3E%3C/svg%3E');
     color: white;
     text-align: center;
     border-radius: 30px;
-    margin: 2rem auto;
-    backdrop-filter: blur(15px) saturate(120%); /* Усиленное размытие и насыщенность */
+    backdrop-filter: blur(15px) saturate(120%);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     width: 90%;
     max-width: 1000px;
@@ -722,15 +765,8 @@ footer {
     overflow: hidden;
     transform-style: preserve-3d;
     perspective: 1200px;
-    transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                box-shadow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 1px solid rgba(100, 255, 218, 0.15); /* Бирюзовая рамка */
-    /* Убираем анимацию фона, чтобы не мешала матовости */
-    /* animation: subtleBackgroundShift 20s linear infinite alternate; */
+    border: 1px solid rgba(100, 255, 218, 0.15);
 }
-
-/* Убираем анимацию фона */
-/* @keyframes subtleBackgroundShift { ... } */
 
 .solar-system-section::before {
     content: '';
@@ -813,20 +849,19 @@ footer {
     flex-direction: column;
     align-items: center;
     padding: 1.5rem;
-    /* Более матовый фон для статистики */
     background: rgba(10, 25, 47, 0.65);
     border-radius: 15px;
-    backdrop-filter: blur(10px) saturate(110%); /* Усиленное размытие */
+    backdrop-filter: blur(10px) saturate(110%);
     transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     transform-style: preserve-3d;
-    border: 1px solid rgba(100, 255, 218, 0.2); /* Ярче бирюзовая рамка */
+    border: 1px solid rgba(100, 255, 218, 0.2);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .stat:hover {
     transform: translateY(-10px) rotateX(8deg) scale(1.03);
     box-shadow: 0 15px 30px rgba(79, 195, 247, 0.2);
-    background: rgba(10, 25, 47, 0.75); /* Чуть темнее при наведении */
+    background: rgba(10, 25, 47, 0.75);
     border-color: rgba(100, 255, 218, 0.4);
 }
 
@@ -852,14 +887,12 @@ footer {
     letter-spacing: 1.5px;
     color: rgba(200, 210, 230, 0.8);
     margin-top: 0.5rem;
-    transition: color 0.5s ease, text-shadow 0.5s ease; /* Добавляем transition для тени */
-    /* Начальное свечение для label */
+    transition: color 0.5s ease, text-shadow 0.5s ease;
     text-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
 }
 
 .stat:hover .label {
     color: #64ffda;
-    /* Усиленное свечение при наведении */
     text-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
 }
 
@@ -971,24 +1004,21 @@ footer {
 }
 
 .carousel-card h4 {
-    font-size: 1.7rem; /* Чуть крупнее */
+    font-size: 1.7rem;
     margin-bottom: 0.8rem;
-    /* Анимированный градиент для заголовков планет */
     background: linear-gradient(45deg, #4fc3f7, #64ffda, #4fc3f7); 
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    /* Добавляем свечение */
     text-shadow: 
         0 0 8px rgba(79, 195, 247, 0.4),
         0 0 15px rgba(100, 255, 218, 0.3);
-    animation: gradientShift 4s ease infinite; /* Анимация градиента */
+    animation: gradientShift 4s ease infinite;
     transition: text-shadow 0.5s ease;
 }
 
 .carousel-card.active h4 {
-    /* Усиление свечения активной карты */
     text-shadow: 
         0 0 12px rgba(79, 195, 247, 0.6),
         0 0 20px rgba(100, 255, 218, 0.4);
@@ -1079,8 +1109,8 @@ h1, h2,
 .mars-section h2,
 .earth-section h2 {
     text-shadow: 
-        0 2px 2px rgba(0, 0, 0, 0.8),  /* Основная тень снизу */
-        0 1px 1px rgba(0, 0, 0, 0.6);  /* Дополнительная тень для глубины */
+        0 2px 2px rgba(0, 0, 0, 0.8),
+        0 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 /* Для главного заголовка Explore the Universe */
@@ -1088,7 +1118,7 @@ h1, h2,
     text-shadow: 
         0 3px 3px rgba(0, 0, 0, 0.8),
         0 2px 2px rgba(0, 0, 0, 0.6),
-        0 0 10px rgba(79, 195, 247, 0.5); /* Сохраняем оригинальное свечение */
+        0 0 10px rgba(79, 195, 247, 0.5);
 }
 
 /* Для заголовка Solar System Exploration */
@@ -1096,7 +1126,7 @@ h1, h2,
     text-shadow: 
         0 2px 2px rgba(0, 0, 0, 0.8),
         0 1px 1px rgba(0, 0, 0, 0.6),
-        0 0 8px rgba(79, 195, 247, 0.4); /* Добавляем легкое свечение */
+        0 0 8px rgba(79, 195, 247, 0.4);
 }
 
 .photo-modal {
@@ -1173,4 +1203,66 @@ h1, h2,
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Контейнер для 3D глобуса */
+#earth-globe-container {
+    width: 100%;
+    max-width: 500px; 
+    height: 500px; 
+    cursor: grab; 
+    position: relative; 
+    background-color: rgba(0,0,0,0.2); /* Легкий фон */
+    border-radius: 50%; /* Скругляем */
+    margin: 2rem auto; /* Больше отступа и центрирование */
+    box-shadow: 0 10px 30px rgba(0, 0, 150, 0.2); /* Добавляем тень */
+}
+
+#earth-globe-container canvas {
+    display: block; 
+    border-radius: 50%; 
+    width: 100%;
+    height: 100%;
+}
+
+#earth-globe-container:active {
+    cursor: grabbing;
+}
+
+/* Индикатор загрузки глобуса */
+.globe-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #4fc3f7;
+    font-size: 1.1rem;
+    z-index: 10;
+    background: rgba(0, 10, 30, 0.7);
+    padding: 1rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: pulse 1.5s infinite;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(79, 195, 247, 0.3);
+    border-top: 4px solid #4fc3f7;
+    border-radius: 50%;
+    margin: 0 auto 0.8rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
 }

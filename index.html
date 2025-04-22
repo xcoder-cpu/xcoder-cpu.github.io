@@ -176,23 +176,18 @@
             </div>
         </section>
 
-        <!-- Модальное окно для просмотра фотографий -->
-        <div id="photo-modal" class="photo-modal">
-            <span class="close-modal">&times;</span>
-            <img class="modal-content" id="modal-img">
-            <div class="modal-caption" id="modal-caption"></div>
-        </div>
-
         <section id="earth" class="earth-section">
             <h2>Земля из космоса</h2>
             <div class="earth-container">
-                <div class="earth-image">
-                    <img id="earth-img" src="" alt="Земля из космоса">
-                </div>
+                <!-- Контейнер для текста -->
                 <div class="earth-info">
                     <h3>Наша прекрасная планета</h3>
-                    <p>Взгляните на Землю с разных ракурсов</p>
+                    <p>Взгляните на Землю с разных ракурсов.</p>
+                    <!-- Подсказка для взаимодействия -->
+                    <p class="interaction-hint"><i class="fas fa-mouse-pointer"></i> Вращайте и приближайте</p> 
                 </div>
+                <!-- Контейнер для 3D глобуса -->
+                <div id="earth-globe-container"></div> 
             </div>
         </section>
     </main>
@@ -205,6 +200,12 @@
     </footer>
 
     <script src="particles.min.js"></script>
-    <script src="script.js"></script>
+    
+    <!-- Подключаем Three.js и OrbitControls как обычные скрипты -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script src="script.js"></script> <!-- Основной скрипт -->
+    <script src="earth.js"></script> <!-- НОВЫЙ скрипт для глобуса -->
 </body>
 </html>
