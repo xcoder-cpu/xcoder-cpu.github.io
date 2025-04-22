@@ -1,13 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Explorer - NASA Daily</title>
+    <title>Space Explorer - NASA Ежедневно</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Базовые мета-теги -->
+    <meta name="description" content="Исследуйте космос с ежедневными обновлениями NASA, фотографиями Марса и астрономическими снимками дня">
+    
+    <!-- Open Graph мета-теги для Discord и соцсетей -->
+    <meta property="og:title" content="Space Explorer - Ваш путеводитель по космосу">
+    <meta property="og:description" content="Ежедневные обновления NASA, фотографии Марса, астрономические снимки дня и прямые трансляции с Земли">
+    <meta property="og:image" content="https://your-domain.com/images/space-preview.jpg">
+    <meta property="og:url" content="https://your-domain.com">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card мета-теги -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Space Explorer">
+    <meta name="twitter:description" content="Исследуйте космос с ежедневными обновлениями NASA">
+    <meta name="twitter:image" content="https://your-domain.com/images/space-preview.jpg">
 </head>
 <body>
     <div class="parallax-wrapper">
@@ -25,10 +41,10 @@
                 <span>Space Explorer</span>
             </div>
             <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#apod">Picture of the Day</a>
-                <a href="#mars">Mars Rover</a>
-                <a href="#earth">Earth</a>
+                <a href="#home">Главная</a>
+                <a href="#apod">Фото дня</a>
+                <a href="#mars">Марсоход</a>
+                <a href="#earth">Земля</a>
             </div>
         </nav>
     </header>
@@ -37,10 +53,10 @@
         <section id="home" class="hero">
             <div class="hero-content">
                 <div class="content-wrapper">
-                    <h1>Explore the Universe</h1>
-                    <p>Discover the wonders of space with NASA's daily updates</p>
+                    <h1>Исследуйте Вселенную</h1>
+                    <p>Откройте для себя чудеса космоса с ежедневными обновлениями NASA</p>
                     <div class="countdown">
-                        <span>Next update in:</span>
+                        <span>Следующее обновление через:</span>
                         <div id="timer">00:00:00</div>
                     </div>
                 </div>
@@ -49,80 +65,80 @@
 
         <section class="solar-system-section">
             <div class="solar-system-header">
-                <h2>Solar System Exploration</h2>
-                <p>Discover the wonders of our cosmic neighborhood</p>
+                <h2>Исследование Солнечной системы</h2>
+                <p>Откройте для себя чудеса нашего космического соседства</p>
                 <div class="planet-stats">
                     <div class="stat">
                         <span class="number">8</span>
-                        <span class="label">Planets</span>
+                        <span class="label">Планет</span>
                     </div>
                     <div class="stat">
                         <span class="number">5</span>
-                        <span class="label">Dwarf Planets</span>
+                        <span class="label">Карликовых планет</span>
                     </div>
                     <div class="stat">
                         <span class="number">200+</span>
-                        <span class="label">Moons</span>
+                        <span class="label">Спутников</span>
                     </div>
                 </div>
             </div>
             
             <div class="solar-system-carousel">
-                <h3>Planetary Highlights</h3>
+                <h3>Планетарные особенности</h3>
                 <div class="carousel-container">
                     <div class="carousel-track">
                         <div class="carousel-card" style="background-image: url('images/mercury.jpg')">
                             <div class="card-content">
-                                <h4>Mercury</h4>
-                                <p>The smallest and fastest planet, a year lasts only 88 days</p>
+                                <h4>Меркурий</h4>
+                                <p>Самая маленькая и быстрая планета, год длится всего 88 дней</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/venus.jpg')">
                             <div class="card-content">
-                                <h4>Venus</h4>
-                                <p>The hottest planet with acid clouds, rotates in the opposite direction</p>
+                                <h4>Венера</h4>
+                                <p>Самая горячая планета с кислотными облаками, вращается в обратном направлении</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/earth.jpg')">
                             <div class="card-content">
-                                <h4>Earth</h4>
-                                <p>The only known planet with life, 71% covered by water</p>
+                                <h4>Земля</h4>
+                                <p>Единственная известная планета с жизнью, 71% покрыта водой</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/mars.jpg')">
                             <div class="card-content">
-                                <h4>Mars</h4>
-                                <p>The Red Planet with the highest mountain in the Solar System (Olympus, 21 km)</p>
+                                <h4>Марс</h4>
+                                <p>Красная планета с самой высокой горой в Солнечной системе (Олимп, 21 км)</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/jupiter.jpg')">
                             <div class="card-content">
-                                <h4>Jupiter</h4>
-                                <p>The largest planet, has 79 moons and powerful storms</p>
+                                <h4>Юпитер</h4>
+                                <p>Самая большая планета, имеет 79 спутников и мощные штормы</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/saturn.jpg')">
                             <div class="card-content">
-                                <h4>Saturn</h4>
-                                <p>Known for its rings of ice and rocks only 20 meters thick</p>
+                                <h4>Сатурн</h4>
+                                <p>Известен своими кольцами изо льда и камней толщиной всего 20 метров</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/uranus.jpg')">
                             <div class="card-content">
-                                <h4>Uranus</h4>
-                                <p>Lies on its side, rotation axis tilted at 98 degrees</p>
+                                <h4>Уран</h4>
+                                <p>Лежит на боку, ось вращения наклонена на 98 градусов</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/neptune.jpg')">
                             <div class="card-content">
-                                <h4>Neptune</h4>
-                                <p>The windiest planet with wind speeds up to 2100 km/h</p>
+                                <h4>Нептун</h4>
+                                <p>Самая ветреная планета со скоростью ветра до 2100 км/ч</p>
                             </div>
                         </div>
                         <div class="carousel-card" style="background-image: url('images/pluto.jpg')">
                             <div class="card-content">
-                                <h4>Pluto</h4>
-                                <p>Has a heart-shaped glacier the size of Texas</p>
+                                <h4>Плутон</h4>
+                                <p>Имеет ледник в форме сердца размером с Техас</p>
                             </div>
                         </div>
                     </div>
@@ -131,10 +147,10 @@
         </section>
 
         <section id="apod" class="apod-section">
-            <h2>Astronomy Picture of the Day</h2>
+            <h2>Астрономическая картинка дня</h2>
             <div class="apod-container">
                 <div class="apod-image">
-                    <img id="apod-img" src="" alt="NASA Astronomy Picture of the Day">
+                    <img id="apod-img" src="" alt="Астрономическая картинка дня NASA">
                 </div>
                 <div class="apod-info">
                     <h3 id="apod-title"></h3>
@@ -145,30 +161,37 @@
         </section>
 
         <section id="mars" class="mars-section">
-            <h2>Mars Rover Photos</h2>
+            <h2>Фотографии с Марсохода</h2>
             <div class="mars-container">
                 <div class="rover-selector">
                     <select id="rover-select">
-                        <option value="curiosity">Curiosity</option>
-                        <option value="opportunity">Opportunity</option>
-                        <option value="spirit">Spirit</option>
+                        <option value="curiosity">Кьюриосити</option>
+                        <option value="opportunity">Оппортьюнити</option>
+                        <option value="spirit">Спирит</option>
                     </select>
                 </div>
                 <div class="mars-photos" id="mars-photos">
-                    <!-- Mars photos will be loaded here -->
+                    <!-- Фотографии Марса будут загружены здесь -->
                 </div>
             </div>
         </section>
 
+        <!-- Модальное окно для просмотра фотографий -->
+        <div id="photo-modal" class="photo-modal">
+            <span class="close-modal">&times;</span>
+            <img class="modal-content" id="modal-img">
+            <div class="modal-caption" id="modal-caption"></div>
+        </div>
+
         <section id="earth" class="earth-section">
-            <h2>Earth from Space</h2>
+            <h2>Земля из космоса</h2>
             <div class="earth-container">
                 <div class="earth-image">
-                    <img id="earth-img" src="" alt="Earth from Space">
+                    <img id="earth-img" src="" alt="Земля из космоса">
                 </div>
                 <div class="earth-info">
-                    <h3>Our Beautiful Planet</h3>
-                    <p>View Earth from different perspectives</p>
+                    <h3>Наша прекрасная планета</h3>
+                    <p>Взгляните на Землю с разных ракурсов</p>
                 </div>
             </div>
         </section>
@@ -176,7 +199,7 @@
 
     <footer>
         <div class="footer-content">
-            <p>Data provided by NASA API</p>
+            <p>Данные предоставлены NASA API</p>
             <p>© 2024 Space Explorer</p>
         </div>
     </footer>

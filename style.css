@@ -70,7 +70,7 @@ body {
     content: '▋';
     position: absolute;
     animation: blink 1s infinite;
-    color: #4fc3f7;
+    color: white;
 }
 
 .typing-text {
@@ -103,7 +103,7 @@ body {
     padding: 3rem;
     border-radius: 30px;
     backdrop-filter: blur(10px);
-    animation: fadeInUp 1.5s ease-out;
+    animation: fadeInUp 1.5s ease-out, glowPulse 3s infinite;
     text-align: center;
     width: 100%;
     position: relative;
@@ -112,10 +112,12 @@ body {
     transition: transform 0.3s ease;
     transform-style: preserve-3d;
     perspective: 1000px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero-content:hover {
-    transform: scale(1.02);
+    transform: scale(1.02) rotateX(5deg) rotateY(5deg);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .hero-content::before {
@@ -158,8 +160,11 @@ body {
     color: #4fc3f7;
     position: relative;
     z-index: 3;
-    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
-    animation: colorPulse 3s ease-in-out infinite;
+    text-shadow: 
+        0 3px 3px rgba(0, 0, 0, 0.8),
+        0 2px 2px rgba(0, 0, 0, 0.6),
+        0 0 10px rgba(79, 195, 247, 0.5);
+    animation: colorPulse 3s ease-in-out infinite, floatText 3s ease-in-out infinite;
 }
 
 .hero p {
@@ -169,6 +174,7 @@ body {
     position: relative;
     z-index: 3;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    animation: fadeInUp 1.5s ease-out 0.5s both, textGlow 2s ease-in-out infinite;
 }
 
 .countdown {
@@ -176,13 +182,55 @@ body {
     font-family: 'Orbitron', sans-serif;
     position: relative;
     z-index: 3;
+    animation: fadeInUp 1.5s ease-out 1s both;
 }
 
 #timer {
     font-size: 2rem;
     color: #4fc3f7;
     text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
-    animation: colorPulse 3s ease-in-out infinite;
+    animation: colorPulse 3s ease-in-out infinite, digitPulse 1s ease-in-out infinite;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    display: inline-block;
+    border: 1px solid rgba(79, 195, 247, 0.3);
+}
+
+@keyframes floatText {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    }
+}
+
+@keyframes digitPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(79, 195, 247, 0.2);
+    }
 }
 
 @keyframes gradientFlow {
@@ -221,6 +269,17 @@ body {
     }
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Remove old background animations */
 .stars, .twinkling, .clouds {
     display: none;
@@ -232,10 +291,54 @@ header {
     top: 0;
     width: 100%;
     z-index: 1000;
-    background: var(--panel-color);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    border-radius: 0 0 30px 30px;
     animation: slideInLeft 1s ease-out;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+header:hover {
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 4px 30px rgba(79, 195, 247, 0.2);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    color: #4fc3f7;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.logo i {
+    font-size: 1.7rem;
+    background: linear-gradient(45deg, #4fc3f7, #64ffda);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: iconGlow 2s ease-in-out infinite;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 10px rgba(72, 202, 228, 0.5));
+    margin-right: 12px;
+}
+
+.logo:hover i {
+    transform: rotate(360deg);
+    animation: iconGlow 1s ease-in-out infinite;
+}
+
+.logo span {
+    position: relative;
+    background: linear-gradient(45deg, #4fc3f7, #64ffda);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: textGlow 2s ease-in-out infinite;
 }
 
 nav {
@@ -247,31 +350,87 @@ nav {
     margin: 0 auto;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
-    color: var(--secondary-color);
-}
-
 .nav-links {
     display: flex;
     gap: 2rem;
+    font-size: 1rem;
 }
 
 .nav-links a {
-    color: var(--text-color);
+    color: white;
     text-decoration: none;
+    position: relative;
+    padding: 0.7rem 1.2rem;
     transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.nav-links a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4fc3f7, #64ffda);
+    transition: width 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #64ffda, #4fc3f7);
+    transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
-    color: var(--secondary-color);
-    background: rgba(100, 255, 218, 0.1);
+    color: #4fc3f7;
+    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+}
+
+.nav-links a:hover::before,
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+@keyframes iconGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(79, 195, 247, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(79, 195, 247, 0.8);
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(79, 195, 247, 0.5);
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(79, 195, 247, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(79, 195, 247, 0.3);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Sections */
@@ -295,6 +454,9 @@ section h2 {
     margin-bottom: 2rem;
     color: var(--secondary-color);
     text-align: center;
+    text-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.8),
+        0 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 /* APOD Section */
@@ -319,6 +481,97 @@ section h2 {
     transform: scale(1.02);
 }
 
+.apod-info {
+    position: relative;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.loading-text {
+    position: relative;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.loading-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(79, 195, 247, 0.2),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+.loading-dots {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 20px;
+}
+
+.loading-dots::after {
+    content: '...';
+    position: absolute;
+    animation: loadingDots 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes loadingDots {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+    100% { content: '.'; }
+}
+
+#apod-title.loading,
+#apod-explanation.loading {
+    min-height: 2em;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+    position: relative;
+}
+
+#apod-title.loading::after,
+#apod-explanation.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(79, 195, 247, 0.2),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
 /* Mars Section */
 .mars-container {
     background: var(--panel-color);
@@ -326,6 +579,8 @@ section h2 {
     border-radius: var(--border-radius);
     backdrop-filter: blur(10px);
     animation: fadeInUp 1s ease-out;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .rover-selector {
@@ -343,18 +598,28 @@ section h2 {
 
 .mars-photos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .mars-photos img {
     width: 100%;
-    border-radius: var(--border-radius);
-    transition: transform 0.3s ease;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
 }
 
 .mars-photos img:hover {
     transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(79, 195, 247, 0.3);
+    border-color: rgba(79, 195, 247, 0.3);
 }
 
 /* Earth Section */
@@ -401,17 +666,6 @@ footer {
     }
 }
 
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .apod-container,
@@ -433,18 +687,31 @@ footer {
         text-align: center;
         gap: 1rem;
     }
+    
+    .mars-photos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .mars-photos {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Solar System Section */
 .solar-system-section {
     padding: 4rem 2rem;
-    background: rgba(0, 0, 0, 0.7);
+    /* Матовый фон с легким градиентом и шумом */
+    background: 
+        linear-gradient(rgba(10, 25, 47, 0.85), rgba(2, 12, 27, 0.9)),
+        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"%3E%3Cpath fill="%23ffffff" fill-opacity="0.03" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"%3E%3C/path%3E%3C/svg%3E');
     color: white;
     text-align: center;
     border-radius: 30px;
     margin: 2rem auto;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(15px) saturate(120%); /* Усиленное размытие и насыщенность */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     width: 90%;
     max-width: 1000px;
     display: flex;
@@ -453,45 +720,81 @@ footer {
     min-height: 800px;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1200px;
+    transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                box-shadow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(100, 255, 218, 0.15); /* Бирюзовая рамка */
+    /* Убираем анимацию фона, чтобы не мешала матовости */
+    /* animation: subtleBackgroundShift 20s linear infinite alternate; */
 }
+
+/* Убираем анимацию фона */
+/* @keyframes subtleBackgroundShift { ... } */
 
 .solar-system-section::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 50%;
+    left: -150%;
+    width: 80%;
     height: 100%;
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.1),
+        rgba(100, 255, 218, 0.08),
         transparent
     );
-    transition: 0.7s;
-    transform: skewX(-25deg);
+    transition: left 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: skewX(-30deg);
+    z-index: 1;
 }
 
 .solar-system-section:hover::before {
     left: 150%;
-    transition: 0.7s;
+    transition: left 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) 0.1s;
+}
+
+.solar-system-section:hover {
+    transform: translateY(-8px) rotateX(3deg) rotateY(3deg) scale(1.01);
+    box-shadow: 0 20px 50px rgba(79, 195, 247, 0.25);
 }
 
 .solar-system-header {
     margin-bottom: 3rem;
     width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 .solar-system-header h2 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin-bottom: 1rem;
     font-family: 'Orbitron', sans-serif;
-    color: #4fc3f7;
+    background: linear-gradient(45deg, #4fc3f7, #64ffda, #7effa4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 
+        0 0 15px rgba(79, 195, 247, 0.3),
+        0 0 30px rgba(100, 255, 218, 0.2);
+    animation: glowPulse 4s ease-in-out infinite;
+    transition: text-shadow 0.5s ease;
+}
+
+.solar-system-header h2:hover {
+    text-shadow: 
+        0 0 20px rgba(79, 195, 247, 0.5),
+        0 0 40px rgba(100, 255, 218, 0.3);
 }
 
 .solar-system-header p {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 2rem;
+    color: rgba(220, 230, 250, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 1.5s ease-out;
+    line-height: 1.6;
 }
 
 .planet-stats {
@@ -500,25 +803,92 @@ footer {
     gap: 3rem;
     width: 100%;
     margin-bottom: 1rem;
+    perspective: 1000px;
+    position: relative;
+    z-index: 2;
 }
 
 .stat {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 1.5rem;
+    /* Более матовый фон для статистики */
+    background: rgba(10, 25, 47, 0.65);
+    border-radius: 15px;
+    backdrop-filter: blur(10px) saturate(110%); /* Усиленное размытие */
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform-style: preserve-3d;
+    border: 1px solid rgba(100, 255, 218, 0.2); /* Ярче бирюзовая рамка */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.stat:hover {
+    transform: translateY(-10px) rotateX(8deg) scale(1.03);
+    box-shadow: 0 15px 30px rgba(79, 195, 247, 0.2);
+    background: rgba(10, 25, 47, 0.75); /* Чуть темнее при наведении */
+    border-color: rgba(100, 255, 218, 0.4);
 }
 
 .stat .number {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: bold;
-    color: #4fc3f7;
+    color: #64ffda;
     font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 12px rgba(100, 255, 218, 0.6);
+    animation: digitPulse 3s ease-in-out infinite;
+    transition: all 0.5s ease;
+}
+
+.stat:hover .number {
+    color: #7effa4;
+    text-shadow: 0 0 18px rgba(126, 255, 164, 0.7);
+    transform: scale(1.05);
 }
 
 .stat .label {
     font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    color: rgba(200, 210, 230, 0.8);
+    margin-top: 0.5rem;
+    transition: color 0.5s ease, text-shadow 0.5s ease; /* Добавляем transition для тени */
+    /* Начальное свечение для label */
+    text-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+}
+
+.stat:hover .label {
+    color: #64ffda;
+    /* Усиленное свечение при наведении */
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.6);
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        text-shadow: 
+            0 0 15px rgba(79, 195, 247, 0.3),
+            0 0 30px rgba(100, 255, 218, 0.2);
+        filter: brightness(1);
+    }
+    50% {
+        text-shadow: 
+            0 0 20px rgba(79, 195, 247, 0.5),
+            0 0 40px rgba(100, 255, 218, 0.3);
+        filter: brightness(1.1);
+    }
+}
+
+@keyframes digitPulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 12px rgba(100, 255, 218, 0.6);
+        filter: saturate(1);
+    }
+    50% {
+        transform: scale(1.03);
+        text-shadow: 0 0 16px rgba(100, 255, 218, 0.8);
+        filter: saturate(1.2);
+    }
 }
 
 /* Vertical Carousel Styles */
@@ -565,7 +935,7 @@ footer {
     background: rgba(0, 0, 0, 0.5);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-size 0.8s ease-in-out;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -575,7 +945,7 @@ footer {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.8);
     visibility: hidden;
-    background-size: cover;
+    background-size: 100%;
     background-position: center;
     background-repeat: no-repeat;
     overflow: hidden;
@@ -601,10 +971,27 @@ footer {
 }
 
 .carousel-card h4 {
-    font-size: 1.5rem;
+    font-size: 1.7rem; /* Чуть крупнее */
     margin-bottom: 0.8rem;
-    color: #4fc3f7;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* Анимированный градиент для заголовков планет */
+    background: linear-gradient(45deg, #4fc3f7, #64ffda, #4fc3f7); 
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Добавляем свечение */
+    text-shadow: 
+        0 0 8px rgba(79, 195, 247, 0.4),
+        0 0 15px rgba(100, 255, 218, 0.3);
+    animation: gradientShift 4s ease infinite; /* Анимация градиента */
+    transition: text-shadow 0.5s ease;
+}
+
+.carousel-card.active h4 {
+    /* Усиление свечения активной карты */
+    text-shadow: 
+        0 0 12px rgba(79, 195, 247, 0.6),
+        0 0 20px rgba(100, 255, 218, 0.4);
 }
 
 .carousel-card p {
@@ -622,6 +1009,8 @@ footer {
     opacity: 0;
     z-index: 0;
     visibility: hidden;
+    background-color: #000;
+    background-size: 40%;
 }
 
 .carousel-card.prev {
@@ -630,6 +1019,8 @@ footer {
     opacity: 0.3;
     z-index: 1;
     visibility: visible;
+    background-color: #000;
+    background-size: 50%;
 }
 
 .carousel-card.active {
@@ -639,6 +1030,8 @@ footer {
     z-index: 2;
     pointer-events: auto;
     visibility: visible;
+    background-color: #000;
+    background-size: 100%;
 }
 
 .carousel-card.next {
@@ -647,6 +1040,8 @@ footer {
     opacity: 0.3;
     z-index: 1;
     visibility: visible;
+    background-color: #000;
+    background-size: 50%;
 }
 
 .carousel-card.far-next {
@@ -655,6 +1050,8 @@ footer {
     opacity: 0;
     z-index: 0;
     visibility: hidden;
+    background-color: #000;
+    background-size: 40%;
 }
 
 /* Hide scrollbar but keep functionality */
@@ -672,4 +1069,108 @@ footer {
     z-index: 3;
     transition: transform 0.3s ease;
     transform-style: preserve-3d;
+}
+
+/* Для всех основных заголовков */
+h1, h2, 
+.hero-content h1,
+.solar-system-header h2,
+.apod-section h2,
+.mars-section h2,
+.earth-section h2 {
+    text-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.8),  /* Основная тень снизу */
+        0 1px 1px rgba(0, 0, 0, 0.6);  /* Дополнительная тень для глубины */
+}
+
+/* Для главного заголовка Explore the Universe */
+.hero h1 {
+    text-shadow: 
+        0 3px 3px rgba(0, 0, 0, 0.8),
+        0 2px 2px rgba(0, 0, 0, 0.6),
+        0 0 10px rgba(79, 195, 247, 0.5); /* Сохраняем оригинальное свечение */
+}
+
+/* Для заголовка Solar System Exploration */
+.solar-system-header h2 {
+    text-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.8),
+        0 1px 1px rgba(0, 0, 0, 0.6),
+        0 0 8px rgba(79, 195, 247, 0.4); /* Добавляем легкое свечение */
+}
+
+.photo-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    animation: zoomIn 0.3s ease-out;
+}
+
+.modal-caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: white;
+    padding: 10px 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.close-modal:hover {
+    color: #4fc3f7;
+    transform: scale(1.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }

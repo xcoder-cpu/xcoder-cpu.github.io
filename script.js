@@ -1,5 +1,5 @@
-// NASA API Key - Replace with your own API key
-const NASA_API_KEY = 'DEMO_KEY'; // Replace with your actual NASA API key
+// NASA API Key - Замените на ваш собственный API ключ
+const NASA_API_KEY = 'DEMO_KEY'; // Замените на ваш реальный NASA API ключ
 
 // Initialize Particles
 particlesJS('particles-js', {
@@ -217,57 +217,175 @@ window.addEventListener('load', () => {
 });
 window.addEventListener('scroll', handleScroll);
 
-// Update timer every second
+// Функция для форматирования даты на русском языке
+function formatRussianDate(date) {
+    const months = [
+        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year} года`;
+}
+
+// Обновление таймера каждую секунду
 function updateTimer() {
     const now = new Date();
     const nextHour = new Date(now);
     nextHour.setHours(now.getHours() + 1, 0, 0, 0);
     
     const diff = nextHour - now;
-    const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
     
-    timer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-setInterval(updateTimer, 1000);
+// Запускаем таймер сразу и обновляем каждую секунду
 updateTimer();
+setInterval(updateTimer, 1000);
 
-// Fetch Astronomy Picture of the Day
+// Функция для перевода текста
+async function translateText(text) {
+    try {
+        // Разбиваем текст на предложения
+        const sentences = text.split(/(?<=[.!?])\s+/);
+        const translatedSentences = [];
+        
+        for (const sentence of sentences) {
+            if (sentence.trim()) {
+                try {
+                    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sentence)}&langpair=en|ru`);
+                    const data = await response.json();
+                    
+                    if (data.responseStatus === 200 && data.responseData.translatedText) {
+                        translatedSentences.push(data.responseData.translatedText);
+                    } else {
+                        translatedSentences.push(sentence); // Если перевод не удался, используем оригинал
+                    }
+                } catch (error) {
+                    console.error('Ошибка при переводе предложения:', error);
+                    translatedSentences.push(sentence);
+                }
+                
+                // Добавляем небольшую задержку между запросами
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        
+        return translatedSentences.join(' ');
+    } catch (error) {
+        console.error('Ошибка при переводе:', error);
+        return text;
+    }
+}
+
+// Получение Астрономической картинки дня
 async function fetchAPOD() {
     try {
+        // Добавляем классы загрузки
+        apodTitle.classList.add('loading');
+        apodExplanation.classList.add('loading');
+        
+        // Устанавливаем временный текст загрузки
+        apodTitle.textContent = 'Загрузка заголовка';
+        apodExplanation.textContent = 'Загрузка описания';
+        
         const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`);
         const data = await response.json();
         
-        apodImg.src = data.url;
-        apodTitle.textContent = data.title;
-        apodDate.textContent = data.date;
-        apodExplanation.textContent = data.explanation;
+        if (data.url) {
+            apodImg.src = data.url;
+            apodImg.alt = data.title || 'Астрономическая картинка дня';
+        }
+        
+        // Переводим заголовок
+        if (data.title) {
+            const translatedTitle = await translateText(data.title);
+            apodTitle.textContent = translatedTitle;
+            apodTitle.classList.remove('loading');
+        }
+        
+        if (data.date) {
+            apodDate.textContent = formatRussianDate(new Date(data.date));
+        }
+        
+        // Переводим описание
+        if (data.explanation) {
+            try {
+                const translatedExplanation = await translateText(data.explanation);
+                apodExplanation.textContent = translatedExplanation;
+                apodExplanation.classList.remove('loading');
+            } catch (error) {
+                console.error('Ошибка при переводе описания:', error);
+                apodExplanation.textContent = data.explanation;
+                apodExplanation.classList.remove('loading');
+            }
+        }
     } catch (error) {
-        console.error('Error fetching APOD:', error);
+        console.error('Ошибка при загрузке APOD:', error);
+        apodTitle.textContent = 'Ошибка загрузки';
+        apodExplanation.textContent = 'К сожалению, не удалось загрузить астрономическую картинку дня. Пожалуйста, попробуйте позже.';
+        apodTitle.classList.remove('loading');
+        apodExplanation.classList.remove('loading');
     }
 }
 
-// Fetch Mars Rover Photos
+// Добавляем индикатор загрузки для перевода
+function addLoadingIndicator() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .loading {
+            position: relative;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .loading:after {
+            content: '...';
+            position: absolute;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Инициализация индикатора загрузки
+addLoadingIndicator();
+
+// Получение фотографий с Марсохода
 async function fetchMarsPhotos(rover) {
     try {
-        const response = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/latest_photos?api_key=${NASA_API_KEY}`);
+        const response = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=1000&api_key=${NASA_API_KEY}`);
         const data = await response.json();
         
         marsPhotos.innerHTML = '';
-        data.latest_photos.slice(0, 6).forEach(photo => {
-            const img = document.createElement('img');
-            img.src = photo.img_src;
-            img.alt = `Mars photo from ${rover}`;
-            marsPhotos.appendChild(img);
-        });
+        
+        if (data.photos && data.photos.length > 0) {
+            const photos = data.photos.slice(0, 6);
+            photos.forEach(photo => {
+                const img = document.createElement('img');
+                img.src = photo.img_src;
+                img.alt = `Фотография с марсохода ${rover}`;
+                img.loading = 'lazy';
+                img.dataset.caption = `Фотография с марсохода ${rover}. Дата: ${photo.earth_date}`;
+                img.addEventListener('click', () => openModal(img.src, img.dataset.caption));
+                marsPhotos.appendChild(img);
+            });
+        } else {
+            marsPhotos.innerHTML = '<p>Фотографии для выбранного марсохода временно недоступны</p>';
+        }
     } catch (error) {
-        console.error('Error fetching Mars photos:', error);
+        console.error('Ошибка при загрузке фотографий с Марса:', error);
+        marsPhotos.innerHTML = '<p>Фотографии для выбранного марсохода временно недоступны</p>';
     }
 }
 
-// Fetch Earth Image
+// Получение изображения Земли
 async function fetchEarthImage() {
     try {
         const response = await fetch(`https://api.nasa.gov/EPIC/api/natural?api_key=${NASA_API_KEY}`);
@@ -279,28 +397,29 @@ async function fetchEarthImage() {
             earthImg.src = `https://epic.gsfc.nasa.gov/archive/natural/${date}/png/${image.image}.png`;
         }
     } catch (error) {
-        console.error('Error fetching Earth image:', error);
+        console.error('Ошибка при загрузке изображения Земли:', error);
+        earthImg.alt = 'Не удалось загрузить изображение Земли';
     }
 }
 
-// Event Listeners
+// Обработчики событий
 roverSelect.addEventListener('change', (e) => {
     fetchMarsPhotos(e.target.value);
 });
 
-// Initial Load
+// Начальная загрузка
 fetchAPOD();
 fetchMarsPhotos('curiosity');
 fetchEarthImage();
 
-// Update content every hour
+// Обновление контента каждый час
 setInterval(() => {
     fetchAPOD();
     fetchMarsPhotos(roverSelect.value);
     fetchEarthImage();
-}, 3600000); // 3600000 milliseconds = 1 hour
+}, 3600000); // 3600000 миллисекунд = 1 час
 
-// Smooth scrolling for navigation links
+// Плавная прокрутка для навигационных ссылок
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -400,7 +519,7 @@ if (carousel) {
     });
 }
 
-// 3D rotation effect for hero section
+// 3D эффект для главной плашки
 const heroContent = document.querySelector('.hero-content');
 const contentWrapper = document.querySelector('.hero-content .content-wrapper');
 
@@ -421,5 +540,89 @@ if (heroContent && contentWrapper) {
 
     heroContent.addEventListener('mouseleave', () => {
         contentWrapper.style.transform = 'rotateX(0) rotateY(0)';
+    });
+}
+
+// Анимация появления элементов с задержкой
+function animateElements() {
+    const elements = document.querySelectorAll('.hero h1, .hero p, .countdown');
+    elements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            element.style.transition = 'all 0.8s ease-out';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, index * 300);
+    });
+}
+
+// Запускаем анимации при загрузке
+window.addEventListener('load', () => {
+    animateElements();
+});
+
+// Модальное окно
+const modal = document.getElementById('photo-modal');
+const modalImg = document.getElementById('modal-img');
+const modalCaption = document.getElementById('modal-caption');
+const closeModal = document.querySelector('.close-modal');
+
+function openModal(src, caption) {
+    modal.style.display = 'block';
+    modalImg.src = src;
+    modalCaption.textContent = caption;
+    document.body.style.overflow = 'hidden'; // Запрещаем прокрутку страницы
+}
+
+function closeModalHandler() {
+    modal.style.display = 'none';
+    document.body.style.overflow = ''; // Возвращаем прокрутку страницы
+}
+
+closeModal.addEventListener('click', closeModalHandler);
+
+// Закрытие модального окна при клике вне изображения
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModalHandler();
+    }
+});
+
+// Закрытие модального окна по клавише Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+        closeModalHandler();
+    }
+});
+
+// 3D эффект слежения за мышкой для Solar System Section
+const solarSystemSection = document.querySelector('.solar-system-section');
+
+if (solarSystemSection) {
+    const maxRotation = 4; // Максимальный угол наклона в градусах
+
+    solarSystemSection.addEventListener('mousemove', (e) => {
+        const rect = solarSystemSection.getBoundingClientRect();
+        const x = e.clientX - rect.left; // Координата X внутри элемента
+        const y = e.clientY - rect.top;  // Координата Y внутри элемента
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * maxRotation;
+        const rotateY = -((x - centerX) / centerX) * maxRotation; // Инвертируем Y для интуитивного наклона
+
+        // Применяем наклон + сохраняем базовый небольшой сдвиг и масштаб от hover (если он есть)
+        // Можно просто применить наклон, тогда hover-трансформация будет переопределяться
+        solarSystemSection.style.transform = `perspective(1200px) translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+    });
+
+    solarSystemSection.addEventListener('mouseleave', () => {
+        // Возвращаем стиль к состоянию ховера (или к исходному, если убрать translateY/scale)
+        // Если оставить transform как в :hover, то при уходе мыши сохранится эффект наведения
+        // Если сбросить transform = '', то вернется к состоянию без ховера
+        solarSystemSection.style.transform = `perspective(1200px) translateY(-8px) rotateX(0deg) rotateY(0deg) scale(1.01)`; // Возврат к hover-состоянию без наклона
+        // Или сбросить полностью: solarSystemSection.style.transform = '';
     });
 }
